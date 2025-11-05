@@ -1,5 +1,6 @@
 ﻿using ClaseAuto;
 using Es;
+using Pro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,18 +106,51 @@ namespace Objetos
             //    }
             //}
 
-            Auto coche = new Auto("toyota", "v4",2024);
-            Auto coche2 = new Auto("mazda", "v3", 2025);
-            coche.MostrarInfo();
-            coche2.MostrarInfo();
-            Console.WriteLine("ingresa tu nombre");
-            string nombreEstudiante = Console.ReadLine();
-            Console.WriteLine("ingresa tu edad");
-            int edadEstudiante = int.Parse(Console.ReadLine());
-            Console.WriteLine("ingresa tu direccion");
-            string direccionEstudiante = Console.ReadLine();
-            Estudiante estudiante = new Estudiante(nombreEstudiante,edadEstudiante,direccionEstudiante);
-            estudiante.VerificarEdad();
+            //Auto coche = new Auto("toyota", "v4",2024);
+            //Auto coche2 = new Auto("mazda", "v3", 2025);
+            //coche.MostrarInfo();
+            //coche2.MostrarInfo();
+            //Console.WriteLine("ingresa tu nombre");
+            //string nombreEstudiante = Console.ReadLine();
+            //Console.WriteLine("ingresa tu edad");
+            //int edadEstudiante = int.Parse(Console.ReadLine());
+            //Console.WriteLine("ingresa tu direccion");
+            //string direccionEstudiante = Console.ReadLine();
+            //Estudiante estudiante = new Estudiante(nombreEstudiante,edadEstudiante,direccionEstudiante);
+            //estudiante.VerificarEdad();
+            ProductoCrud tienda1 = new ProductoCrud();
+            bool continuar = true;
+            while (continuar)
+            {
+                Console.WriteLine("que deseas hacer? \n 0. Salir \n 1. Mostrar productos \n 2. Crear producto \n 3. Actualizar producto \n 4. Eliminar producto  ");
+                int opcion = int.Parse(Console.ReadLine());
+                switch (opcion)
+                {
+                    case 0:
+                        Console.WriteLine("has salido");
+                        continuar = false;
+                        break;
+                    case 1:
+                        tienda1.MostrarProductos();
+                        break;
+                    case 2:
+                        tienda1.CrearProducto();
+                        break;
+                    case 3:
+                        Console.WriteLine("ingresa id del producto que deseas actualizar");
+                        int productoActualizar = int.Parse(Console.ReadLine());
+                        tienda1.ActualizarProducto(productoActualizar);
+                        break;
+                    case 4:
+                        Console.WriteLine("ingresa id del producto que deseas eliminar");
+                        int productoEliminar = int.Parse(Console.ReadLine());
+                        tienda1.EliminarProducto(productoEliminar);
+                        break;
+                    default:
+                        Console.WriteLine("no has elegido una opcion posible");
+                        break;
+                }
+            }
         }
     }
 }
