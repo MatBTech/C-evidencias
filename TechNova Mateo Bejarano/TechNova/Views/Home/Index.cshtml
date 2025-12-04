@@ -1,0 +1,294 @@
+﻿@{
+    ViewData["Title"] = "Inicio - TechNova";
+}
+
+<style>
+    :root {
+        --primary-dark: #1a365d;
+        --primary-medium: #2c5282;
+        --accent-color: #4299e1;
+        --dark-bg: #0f172a;
+        --card-bg: #1e293b;
+        --card-hover: #334155;
+        --text-light: #e2e8f0;
+        --text-muted: #94a3b8;
+        --border-color: #475569;
+        --nav-bg: rgba(15, 23, 42, 0.95);
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        color: var(--text-light);
+    }
+
+    /* Header/Navbar Styles */
+    .navbar-custom {
+        background-color: var(--nav-bg) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        padding: 0.8rem 0;
+    }
+
+    .navbar-brand-custom {
+        color: var(--accent-color) !important;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .nav-link-custom {
+        color: var(--text-light) !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        margin: 0 0.2rem;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+        .nav-link-custom:hover {
+            background-color: var(--primary-medium);
+            color: white !important;
+        }
+
+        .nav-link-custom.active {
+            background-color: var(--accent-color);
+            color: white !important;
+        }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        padding: 4rem 0 2rem;
+        background: linear-gradient(180deg, var(--dark-bg) 0%, rgba(26, 54, 93, 0.2) 100%);
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 3rem;
+    }
+
+    .hero-title {
+        font-weight: 800;
+        letter-spacing: -1px;
+        font-size: 3.5rem;
+        background: linear-gradient(90deg, var(--accent-color), #63b3ed);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-subtitle {
+        max-width: 650px;
+        margin: 1.5rem auto 0;
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    /* Cards */
+    .card-custom {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease;
+    }
+
+        .card-custom:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background-color: var(--card-hover);
+            border-color: var(--accent-color);
+        }
+
+    .card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--accent-color);
+    }
+
+    .card-text {
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+
+    .btn-custom {
+        background-color: var(--primary-medium);
+        border: none;
+        color: white;
+        border-radius: 30px;
+        padding: 10px 24px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: background-color .3s ease, transform .2s ease;
+    }
+
+        .btn-custom:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+    .icon-circle {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.8rem;
+        color: var(--accent-color);
+    }
+</style>
+
+<!-- Header/Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <div class="container">
+        <a class="navbar-brand navbar-brand-custom" asp-controller="Home" asp-action="Index">
+            <i class="fas fa-rocket me-2"></i>TechNova
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom active" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-home me-1"></i> Inicio
+                    </a>
+                </li>
+                @if(User.Identity?.IsAuthenticated ?? false)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" asp-controller="Clientes" asp-action="Index">
+                            <i class="fas fa-users me-1"></i> Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" asp-controller="Productoes" asp-action="Index">
+                            <i class="fas fa-box me-1"></i> Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" asp-controller="Ventas" asp-action="Index">
+                            <i class="fas fa-chart-bar me-1"></i> Ventas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" asp-controller="VentaDetalles" asp-action="Index">
+                            <i class="fas fa-chart-bar me-1"></i> Detalles de ventas
+                        </a>
+                    </li>
+                    
+
+                    <!-- Logout using Identity area: POST to /Identity/Account/Logout -->
+                    <li class="nav-item ms-3">
+                        <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-custom">Cerrar sesión</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <!-- Login link to Identity Login page -->
+                    <li class="nav-item ms-3">
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-custom">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-custom btn-outline-light">Registrarse</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container py-4">
+
+    <!-- Hero Title -->
+    <div class="text-center mb-5">
+        <h1 class="hero-title">
+            Bienvenido a <span class="text-gradient">TechNova</span>
+        </h1>
+        <p class="hero-subtitle">
+            Innovación tecnológica, gestión eficiente y soluciones inteligentes que impulsan el crecimiento de tu empresa.
+        </p>
+    </div>
+
+
+    <!-- Stats Section -->
+    <div class="row mt-5 pt-5">
+        <div class="col-12">
+            <div class="text-center mb-4">
+                <h3 class="text-light">Dashboard Rápido</h3>
+                <p class="text-muted">Vista general de las métricas principales</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="card card-custom p-3">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-2">Clientes Activos</h6>
+                            <h4 class="text-accent mb-0">1,248</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom p-3">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-2">Productos en Stock</h6>
+                            <h4 class="text-accent mb-0">856</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom p-3">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-2">Ventas Este Mes</h6>
+                            <h4 class="text-accent mb-0">$42,580</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom p-3">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-2">Órdenes Pendientes</h6>
+                            <h4 class="text-accent mb-0">24</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+    // Add active class to current nav item
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUrl = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link-custom');
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentUrl) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<TechNova.Models.Venta>
+
+@{
+    ViewData["Title"] = "Ventas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Ventas</h1>
+    <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg me-1"></i> Agregar Venta</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Productos</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (var venta in Model)
+                        {
+                            <tr>
+                                <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td>@venta.Cliente?.NombreCompleto</td>
+                                <td>
+                                    <ul class="mb-0">
+                                        @foreach (var detalle in venta.VentaDetalles)
+                                        {
+                                            <li>
+                                                @detalle.Producto?.Nombre  
+                                                @detalle.PrecioUnitario.ToString("C") x @detalle.Cantidad
+                                            </li>
+                                        }
+                                    </ul>
+                                </td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-primary me-1" asp-action="Details" asp-route-id="@venta.VentaId"><i class="bi bi-eye"></i>Detalles</a>
+                                    <a class="btn btn-sm btn-outline-secondary me-1" asp-action="Edit" asp-route-id="@venta.VentaId"><i class="bi bi-pencil"></i>Editar</a>
+                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@venta.VentaId"><i class="bi bi-trash"></i>Eliminar</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No hay ventas registradas</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

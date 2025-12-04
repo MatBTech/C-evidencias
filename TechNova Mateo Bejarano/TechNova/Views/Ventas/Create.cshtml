@@ -1,0 +1,181 @@
+﻿@model TechNova.Models.VentaCreateViewModel
+
+@{
+    ViewData["Title"] = "Crear Venta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Crear Venta</h1>
+<hr />
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- CLIENTE -->
+    <select asp-for="ClienteId" class="form-control">
+        <option value="">Seleccione un cliente</option>
+        @foreach (var c in Model.Clientes)
+        {
+            <option value="@c.ClienteId">@c.NombreCompleto</option>
+        }
+    </select>
+    <span asp-validation-for="ClienteId" class="validation-error"></span>
+
+    <hr />
+
+    <!-- PRODUCTO Y CANTIDAD -->
+    <div class="row">
+        <div class="col-md-6">
+            <label>Producto</label>
+            <select id="productoSelect" class="form-control">
+                <option value="">Seleccione un producto</option>
+                @foreach (var p in Model.Productos)
+                {
+                    <option value="@p.ProductoId" data-precio="@p.PrecioUnitario">@p.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>Cantidad</label>
+            <input id="cantidadInput" type="number" class="form-control" min="1" value="1" />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+            <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
+        </div>
+    </div>
+
+    <hr />
+
+    <!-- TABLA DETALLE -->
+    <table class="table table-bordered mt-3" id="tablaDetalle">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h3>Total: <span id="total">0.00</span></h3>
+
+    <!-- ITEMS OCULTOS PARA ENVIAR AL CONTROLLER -->
+    <div id="itemsContainer"></div>
+
+    <hr />
+
+    <button type="submit" class="btn btn-primary">Guardar Venta</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+
+</form>
+
+@section Scripts {
+    <script>
+
+        let total = 0;
+        let currentIndex = 0;
+
+        function actualizarTotal() {
+            document.getElementById("total").innerText = total.toFixed(2);
+        }
+
+        function mostrarErrorSelector(selector, message) {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            el.innerText = message;
+            el.style.display = message ? 'inline-block' : 'none';
+        }
+
+        document.getElementById("btnAgregar").addEventListener("click", function () {
+
+            let select = document.getElementById("productoSelect");
+            let productoId = select.value;
+            let productoNombre = select.options[select.selectedIndex]?.text || '';
+            let precio = parseFloat(select.options[select.selectedIndex]?.dataset.precio) || 0;
+            let cantidad = parseInt(document.getElementById("cantidadInput").value) || 0;
+
+            // Validaciones sencillas
+            if (!productoId) {
+                alert('Seleccione un producto antes de agregar.');
+                return;
+            }
+            if (cantidad <= 0) {
+                alert('La cantidad debe ser mayor que 0.');
+                return;
+            }
+
+            let subtotal = precio * cantidad;
+
+            total += subtotal;
+            actualizarTotal();
+
+            // Agregar fila al detalle
+            let fila = `
+                <tr data-index="${currentIndex}">
+                    <td>${productoNombre}</td>
+                    <td>${precio.toFixed(2)}</td>
+                    <td>${cantidad}</td>
+                    <td>${subtotal.toFixed(2)}</td>
+                    <td><button type="button" class="btn btn-danger btn-sm btnEliminar">X</button></td>
+                </tr>
+            `;
+
+            document.querySelector("#tablaDetalle tbody").insertAdjacentHTML("beforeend", fila);
+
+            // Crear inputs ocultos para enviar al servidor (agrupados por índice)
+            let hidden = `
+                <div class="item-hidden" data-index="${currentIndex}">
+                    <input type="hidden" name="Items[${currentIndex}].ProductoId" value="${productoId}" />
+                    <input type="hidden" name="Items[${currentIndex}].Cantidad" value="${cantidad}" />
+                    <input type="hidden" name="Items[${currentIndex}].PrecioUnitario" value="${precio}" />
+                    <input type="hidden" name="Items[${currentIndex}].Subtotal" value="${subtotal.toFixed(2)}" />
+                </div>
+            `;
+
+            document.getElementById("itemsContainer").insertAdjacentHTML("beforeend", hidden);
+
+            currentIndex++;
+        });
+
+        // Delegated event for delete buttons
+        document.querySelector('#tablaDetalle tbody').addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('btnEliminar')) {
+                const row = e.target.closest('tr');
+                const idx = row.dataset.index;
+
+                // Remove corresponding hidden inputs and adjust total
+                const hiddenDiv = document.querySelector(`#itemsContainer .item-hidden[data-index='${idx}']`);
+                if (hiddenDiv) {
+                    const subtotalInput = hiddenDiv.querySelector("input[name$='.Subtotal']");
+                    const subtotal = parseFloat(subtotalInput?.value) || 0;
+                    total -= subtotal;
+                    hiddenDiv.remove();
+                }
+
+                row.remove();
+                actualizarTotal();
+            }
+        });
+
+        // Agregar prevención de envío si total negativo o sin items
+        document.querySelector('form[asp-action="Create"]').addEventListener('submit', function (e) {
+            const items = document.querySelectorAll('#itemsContainer .item-hidden');
+            if (!items || items.length === 0) {
+                e.preventDefault();
+                alert('La venta debe contener al menos un producto.');
+                return;
+            }
+            if (total < 0) {
+                e.preventDefault();
+                alert('El total no puede ser negativo.');
+                return;
+            }
+        });
+
+    </script>
+}
